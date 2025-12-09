@@ -19,7 +19,7 @@ def top_artists():
     response = requests.get(url, headers=headers, params=querystring)
     response_data = response.json()
     artists_info = []
-    if "artists" in response_data['artists']:
+    if "artists" in response_data:
         for artist in response_data["artists"]:
             name = artist.get("name", "Unknown Artist")
             artist_id = artist.get("id", "N/A")
