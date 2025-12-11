@@ -23,15 +23,66 @@ def top_artists():
         for artist in response_data["artists"]:
             name = artist.get("name", "Unknown Artist")
             artist_id = artist.get("id", "N/A")
-            avatar_url = artist.get("images", [{}])[0].get("url","")
-            artists_info.append((name, artist_id, avatar_url))
+            avatar_url = artist.get("images", [{}])[0].get("url", "")
+            avatar_url2 = artist.get("images", [{}])[1].get("url", "")
+            avatar_url3 = artist.get("images", [{}])[2].get("url", "")
+            artists_info.append((name, artist_id, avatar_url, avatar_url2, avatar_url3))
     return artists_info
+
+
+def top_tracks():
+
+    url = "https://spotify23.p.rapidapi.com/tracks/"
+
+    querystring = {"ids": "4WNcduiCmDNfmTEz7JvmLv"}
+
+    headers = {
+        "x-rapidapi-key": "85c6d0c756mshcacc20d7e1f8b95p181220jsn10b7a5dc4832",
+        "x-rapidapi-host": "spotify23.p.rapidapi.com",
+    }
+
+    response = requests.get(url, headers=headers, params=querystring)
+    data = response.json()
+    track_details = []
+    if "tracks" in data:
+        for track in data["tracks"]:
+            track_name = track.get("name", "Unknown Track")
+            track_id = track.get("id", "N/A")
+            album_name = track.get("album", {}).get("name", "Unknown Album")
+            artist_name = track.get("artists", [{}])[0].get("name", "Unknown Artist")
+            artist_name2 = track.get("artists", [{}])[1].get("name", "Unknown Artist")
+            artist_name3 = track.get("artists", [{}])[2].get("name", "Unknown Artist")
+            artist_image = (
+                track.get("album", {}).get("images", [{}])[0].get("url", "")
+            )
+            artist_image2 = (
+                track.get("album", {}).get("images", [{}])[1].get("url", "")
+            )
+            artist_image3 = (
+                track.get("album", {}).get("images", [{}])[2].get("url", "")
+            )
+            track_details.append(
+                {
+                    "track_name": track_name,
+                    "track_id": track_id,
+                    "album_name": album_name,
+                    "artist_name": artist_name,
+                    "artist_name2": artist_name2,
+                    "artist_name3": artist_name3,
+                    "artist_image": artist_image,
+                    "artist_image2": artist_image2,
+                    "artist_image3": artist_image3,
+                }
+            )
+    else:
+        print("No tracks found in the response.")
+    return track_details
 
 
 @login_required(login_url="login")
 def index(request):
     artists_info = top_artists()
-    print(artists_info)
+    top_tracks_info = top_tracks()
     context = {
         "artists_info": artists_info,
     }
